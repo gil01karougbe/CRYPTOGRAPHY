@@ -7,6 +7,7 @@ ALPHABET=[chr(i) for i in range(32,127)]
 w=len(ALPHABET)
 Tab=[chr(i) for i in range(256)]
 t=len(Tab)
+
 def INVERSE_MODULO(X,N):
   if(gcd(X,N)!=1): print("error")
   else:
@@ -45,6 +46,7 @@ def gp(chaine,N):
       S=S+a*(N**k)
       k=k-1
     return S
+
 def gp_inverse(Y,p,N):
   R=[]
   for i in range(p-1,-1,-1):
@@ -52,13 +54,10 @@ def gp_inverse(Y,p,N):
     R.append(q)
     Y=Y%N**i
   return R
+
 def MAX(T):
   max=T[0]
   for i in T:
     if i>=max:max=i
   j=T.index(max)  
   return (j,max)
-
-n=1
-m=INVERSE_MODULO(n,26)
-print(m)

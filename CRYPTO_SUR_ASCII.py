@@ -1,5 +1,5 @@
 from math import gcd
-from MATRICES import INDICE, INVERSE_MODULO, gp, gp_inverse
+from index import INDICE, INVERSE_MODULO, gp, gp_inverse
 
 Tab=[chr(i) for i in range(256)]
 w=len(Tab)
@@ -70,6 +70,26 @@ def DECHIFFREMENT_DE_DECALAGEAFFINE(chiffré,a,b):
     a1=INVERSE_MODULO(a,w)
     b1=0-a1*b
     return DECALAGE_AFFINE(chiffré,a1,b1)
+def CHIFFRE_PAR_PERMUTATION(message,key,p):
+    chiffré=""
+    D=DICO_GENERATEUR(key,p)
+    for c in message:
+        x=INDICE(Tab,c)
+        y=D[x]
+        chiffré+=Tab[y]
+
+    return chiffré
+
+def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
+    msgclaire=""
+    D=DICO_GENERATEUR(key,p)
+    for c in chiffré:
+        y=INDICE(Tab,c)
+        for i in range(w):
+            if(D[i]==y):
+                x=i
+        msgclaire+=Tab[x]
+    return msgclaire
 
 def CHIFFRE_DE_VIGENERE(message,key):
     chiffré=""
@@ -124,26 +144,6 @@ def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
                 msgclaire+=Tab[j]
         return msgclaire
 
-def CHIFFRE_PAR_PERMUTATION(message,key,p):
-    chiffré=""
-    D=DICO_GENERATEUR(key,p)
-    for c in message:
-        x=INDICE(Tab,c)
-        y=D[x]
-        chiffré+=Tab[y]
-
-    return chiffré
-
-def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
-    msgclaire=""
-    D=DICO_GENERATEUR(key,p)
-    for c in chiffré:
-        y=INDICE(Tab,c)
-        for i in range(w):
-            if(D[i]==y):
-                x=i
-        msgclaire+=Tab[x]
-    return msgclaire
 
 def CHIFFRE_DE_VERNAM(message,key):
     chiffré=""
