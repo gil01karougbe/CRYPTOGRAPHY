@@ -1,7 +1,8 @@
 from math import gcd
 from index import INDICE, gp, gp_inverse
 from index import INVERSE_MODULO
-
+import numpy as np
+from numpy.linalg import inv, det
 Tab=[chr(i) for i in range(97) if i!=32]+[chr(i) for i in range(123,256)]
 ALPHABET27=[chr(i) for i in range(97,123)]+[chr(32)]
 #FONCTIONS PRELIMINAIRES
@@ -10,7 +11,6 @@ def FILTRER(message):
         msg=message.replace(c,"")
         message=msg
     return msg
-
 def GENERE_CLE(cle,N):
     q=N//len(cle)
     r=N%len(cle)
@@ -22,7 +22,6 @@ def GENERE_CLE(cle,N):
             key+=cle[i]
 
         return key
-
 def RECOLLER(liste):
     f = ''
     try : #clause try
@@ -31,7 +30,6 @@ def RECOLLER(liste):
     except :#clause except
         pass    #l'instruction pass indique de rien faire ici quelque soit le type d'exception
     return f
-
 def DICO_GENERATEUR(keyword,pos):
   key=""
   rest=""
@@ -67,10 +65,10 @@ def CHIFFRE_DE_CESAR(message,k):
         c=ALPHABET27[y%27]
         chiffré+=c
     return chiffré
-
 def DECHIFFREMENT_DE_CESAR(chiffré,k):
     p=(27-k)%27
     return CHIFFRE_DE_CESAR(chiffré,p)
+
 
 def DECALAGE_AFFINE(message,a,b):
     chiffré=""
@@ -81,11 +79,11 @@ def DECALAGE_AFFINE(message,a,b):
         c=ALPHABET27[y%27]
         chiffré+=c
     return chiffré
-
 def DECHIFFREMENT_DE_DECALAGEAFFINE(chiffré,a,b):
     a1=INVERSE_MODULO(a,27)
     b1=0-a1*b
     return DECALAGE_AFFINE(chiffré,a1,b1)
+
 
 def CHIFFRE_PAR_PERMUTATION(message,key,p):
     chiffré=""
@@ -97,7 +95,6 @@ def CHIFFRE_PAR_PERMUTATION(message,key,p):
         chiffré+=ALPHABET27[y]
 
     return chiffré
-
 def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
     msgclaire=""
     D=DICO_GENERATEUR(key,p)
@@ -108,6 +105,7 @@ def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
                 x=i
         msgclaire+=ALPHABET27[x]
     return msgclaire
+
 
 def CHIFFRE_DE_VIGENERE(message,key):
     chiffré=""
@@ -122,7 +120,6 @@ def CHIFFRE_DE_VIGENERE(message,key):
             y=x+k
             chiffré+=ALPHABET27[y%27]
     return chiffré
-
 def DECHIFFREMENT_VIGENERE(chiffré,key):
     Tabclaire=list()
     for i in range(len(key)):
@@ -131,6 +128,7 @@ def DECHIFFREMENT_VIGENERE(chiffré,key):
         Tabclaire.append(Mi)
     messageclaire=RECOLLER(Tabclaire)
     return messageclaire
+
 
 def DECALAGE_AFFINE_PAR_BLOC(message,a,b,p):
     if(gcd(a,27**p)!=1): print("error:Vous devez chiffrer avec un a inversible modulo",27**p)
@@ -150,7 +148,6 @@ def DECALAGE_AFFINE_PAR_BLOC(message,a,b,p):
             for j in Ci:
                 chiffré+=ALPHABET27[j]
         return chiffré
-
 def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
     msgclaire=""
     if(gcd(a,27**p)!=1): print("error:")
@@ -166,6 +163,34 @@ def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
                 msgclaire+=ALPHABET27[j]
         return msgclaire
 
+
+def CHIFFRE_DE_HILL(message,K):
+    chiffré=""
+    T=[]
+    (p,q)= np.shape(K)
+    msg=FILTRER(message)
+    r=len(msg)%p
+    if(r!=0):
+        msg.rjust(len(msg)+p-r,"x")
+    for c in msg:
+        x=INDICE(ALPHABET27,c)
+        T.append(x)
+    n=len(T)//p
+    tmp=np.array(T)
+    X=tmp.reshape(n,p)
+    Y=np.dot(X,K)
+    R=list(Y.reshape(n*p))
+    for i in R:
+        j=int(i)
+        c=ALPHABET27[j%27]
+        chiffré+=c
+    return chiffré
+def DECHIFFREMENT_HILL(chiffré,K):
+    K1=inv(K)
+    return CHIFFRE_DE_HILL(chiffré,K1)
+
+
+
 def CHIFFRE_DE_VERNAM(message,key):
     chiffré=""
     msg=FILTRER(message)
@@ -178,7 +203,6 @@ def CHIFFRE_DE_VERNAM(message,key):
             y=x+k
             chiffré+=ALPHABET27[y%27]
     return chiffré
-
 def DECHIFFREMENT_VERNAM(chiffré,key):
     msgclaire=""
     ky=FILTRER(key)
@@ -229,9 +253,16 @@ C5=CHIFFRE_PAR_PERMUTATION(m,"crossword",10)
 print(C5)
 print(DECHIFFREMENT_PERMUTATION(C5,"crossword",10))
 print("-----------------------")
-C6=CHIFFRE_DE_VERNAM(m,m)
+key=[[1,2],
+    [3,7]]
+k=np.array(key)
+C6=CHIFFRE_DE_HILL(m,k)
 print(C6)
-print(DECHIFFREMENT_VERNAM(C6,m))
+print(DECHIFFREMENT_HILL(C6,k))
+print("---------------------")
+C7=CHIFFRE_DE_VERNAM(m,m)
+print(C7)
+print(DECHIFFREMENT_VERNAM(C7,m))
 
 
 

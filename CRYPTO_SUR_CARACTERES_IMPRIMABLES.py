@@ -1,6 +1,7 @@
 from math import gcd
 from index import INDICE, INVERSE_MODULO, gp, gp_inverse
-
+import numpy as np
+from numpy.linalg import inv, det
 ALPHABET=[chr(i) for i in range(32,127)]
 w=len(ALPHABET)
 Tab=[chr(i) for i in range(32)]+[chr(i) for i in range(127,256)]
@@ -10,7 +11,6 @@ def FILTRER(message):
         msg=message.replace(c,"")
         message=msg
     return msg
-
 def GENERE_CLE(cle,N):
     q=N//len(cle)
     r=N%len(cle)
@@ -22,7 +22,6 @@ def GENERE_CLE(cle,N):
             key+=cle[i]
 
         return key
-
 def RECOLLER(liste):
     f = ''
     try : #clause try
@@ -94,7 +93,6 @@ def CHIFFRE_PAR_PERMUTATION(message,key,p):
         chiffré+=ALPHABET[y]
 
     return chiffré
-
 def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
     msgclaire=""
     D=DICO_GENERATEUR(key,p)
@@ -105,6 +103,8 @@ def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
                 x=i
         msgclaire+=ALPHABET[x]
     return msgclaire
+
+
 def CHIFFRE_DE_VIGENERE(message,key):
     chiffré=""
     msg=FILTRER(message)
@@ -126,6 +126,8 @@ def DECHIFFREMENT_VIGENERE(chiffré,key):
         Tabclaire.append(Mi)
     messageclaire=RECOLLER(Tabclaire)
     return messageclaire
+
+
 def DECALAGE_AFFINE_PAR_BLOC(message,a,b,p):
     if(gcd(a,w**p)!=1): print("error:Vous devez chiffrer avec un a inversible modulo",w**p)
     else:
@@ -144,8 +146,6 @@ def DECALAGE_AFFINE_PAR_BLOC(message,a,b,p):
             for j in Ci:
                 chiffré+=ALPHABET[j]
         return chiffré
-
-
 def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
     msgclaire=""
     if(gcd(a,w**p)!=1): print("error:")
@@ -160,6 +160,33 @@ def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
             for j in Mi:
                 msgclaire+=ALPHABET[j]
         return msgclaire
+
+def CHIFFRE_DE_HILL(message,K):
+    chiffré=""
+    T=[]
+    (p,q)= np.shape(K)
+    msg=FILTRER(message)
+    r=len(msg)%p
+    if(r!=0):
+        msg.rjust(len(msg)+p-r,"x")
+    for c in msg:
+        x=INDICE(ALPHABET,c)
+        T.append(x)
+    n=len(T)//p
+    tmp=np.array(T)
+    X=tmp.reshape(n,p)
+    Y=np.dot(X,K)
+    R=list(Y.reshape(n*p))
+    for i in R:
+        j=int(i)
+        c=ALPHABET[j%w]
+        chiffré+=c
+    return chiffré
+def DECHIFFREMENT_HILL(chiffré,K):
+    K1=inv(K)
+    return CHIFFRE_DE_HILL(chiffré,K1)
+
+
 
 def CHIFFRE_DE_VERNAM(message,key):
     chiffré=""
@@ -221,6 +248,13 @@ C5=CHIFFRE_PAR_PERMUTATION(m,"crossword",10)
 print(C5)
 print(DECHIFFREMENT_PERMUTATION(C5,"crossword",10))
 print("-----------------------")
-C6=CHIFFRE_DE_VERNAM(m,m)
+key=[[1,2],
+    [3,7]]
+k=np.array(key)
+C6=CHIFFRE_DE_HILL(m,k)
 print(C6)
-print(DECHIFFREMENT_VERNAM(C6,m))
+print(DECHIFFREMENT_HILL(C6,k))
+print("---------------------")
+C7=CHIFFRE_DE_VERNAM(m,m)
+print(C7)
+print(DECHIFFREMENT_VERNAM(C7,m))

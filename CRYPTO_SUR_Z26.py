@@ -1,7 +1,6 @@
 from math import gcd
 from numpy.linalg import inv, det
 import numpy as np
-import numpy.linalg as npl
 from index import INDICE, MAX, gp, gp_inverse
 from index import INVERSE_MODULO
 
@@ -13,7 +12,6 @@ def FILTRER(message):
         msg=message.replace(c,"")
         message=msg
     return msg
-
 def GENERE_CLE(cle,N):
     k=FILTRER(cle)
     q=N//len(k)
@@ -26,7 +24,6 @@ def GENERE_CLE(cle,N):
             key+=k[i]
 
         return key
-
 def RECOLLER(liste):
     f = ''
     try : #clause try
@@ -35,7 +32,6 @@ def RECOLLER(liste):
     except :#clause except
         pass    #l'instruction pass indique de rien faire ici quelque soit le type d'exception
     return f
-
 def DICO_GENERATEUR(keyword,pos):
   key=""
   rest=""
@@ -69,10 +65,11 @@ def CHIFFRE_DE_CESAR(message,k):
         y=x+k
         chiffré+=ALPHABET26[y%26]
     return chiffré
-
 def DECHIFFREMENT_DE_CESAR(chiffré,k):
     p=(26-k)%26
     return CHIFFRE_DE_CESAR(chiffré,p)
+
+
 
 def DECALAGE_AFFINE(message,a,b):
     chiffré=""
@@ -82,7 +79,6 @@ def DECALAGE_AFFINE(message,a,b):
         y=a*x+b
         chiffré+=ALPHABET26[y%26]
     return chiffré
-
 def DECHIFFREMENT_DE_DECALAGEAFFINE(chiffré,a,b):
     a1=INVERSE_MODULO(a,26)
     b1=0-a1*b
@@ -99,7 +95,6 @@ def CHIFFRE_PAR_PERMUTATION(message,key,p):
         chiffré+=ALPHABET26[y]
 
     return chiffré
-
 def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
     msgclaire=""
     D=DICO_GENERATEUR(key,p)
@@ -110,6 +105,7 @@ def DECHIFFREMENT_PERMUTATION(chiffré,key,p):
                 x=i
         msgclaire+=ALPHABET26[x]
     return msgclaire
+
 
 def CHIFFRE_DE_VIGENERE(message,key):
     chiffré=""
@@ -124,7 +120,6 @@ def CHIFFRE_DE_VIGENERE(message,key):
             y=x+k
             chiffré+=ALPHABET26[y%26]
     return chiffré
-
 def DECHIFFREMENT_VIGENERE(chiffré,key):
     Tabclaire=list()
     for i in range(len(key)):
@@ -133,6 +128,7 @@ def DECHIFFREMENT_VIGENERE(chiffré,key):
         Tabclaire.append(Mi)
     messageclaire=RECOLLER(Tabclaire)
     return messageclaire
+
 
 def DECALAGE_AFFINE_PAR_BLOC(message,a,b,p):
     if(gcd(a,26**p)!=1): print("error:Vous devez chiffrer avec un a inversible modulo",26**p)
@@ -152,7 +148,6 @@ def DECALAGE_AFFINE_PAR_BLOC(message,a,b,p):
             for j in Ci:
                 chiffré+=ALPHABET26[j]
         return chiffré
-
 def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
     msgclaire=""
     if(gcd(a,26**p)!=1): print("error:")
@@ -167,6 +162,7 @@ def DECHIFFREMENT_AFFINE_PAR_BLOC(chiffré,a,b,p):
             for j in Mi:
                 msgclaire+=ALPHABET26[j]
         return msgclaire
+
 
 def CHIFFRE_DE_HILL(message,K):
     chiffré=""
@@ -189,10 +185,10 @@ def CHIFFRE_DE_HILL(message,K):
         c=ALPHABET26[j%26]
         chiffré+=c
     return chiffré
-
 def DECHIFFREMENT_HILL(chiffré,K):
     K1=inv(K)
     return CHIFFRE_DE_HILL(chiffré,K1)
+
 
 def CHIFFRE_DE_VERNAM(message,key):
     chiffré=""
@@ -206,7 +202,6 @@ def CHIFFRE_DE_VERNAM(message,key):
             y=x+k
             chiffré+=ALPHABET26[y%26]
     return chiffré
-
 def DECHIFFREMENT_VERNAM(chiffré,key):
     msgclaire=""
     ky=FILTRER(key)
@@ -227,7 +222,7 @@ def CRYPTANALYSE_CESAR(chiffré):
         T.append(n)
     (i1,m1)=MAX(T)
     #conjecture1
-    p=(i-4)%26
+    p=(i1-4)%26
     mc=DECHIFFREMENT_DE_CESAR(chiffré,p)
     if(CHIFFRE_DE_CESAR(mc)==chiffré):return mc
     else:
