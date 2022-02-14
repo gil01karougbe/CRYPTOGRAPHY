@@ -156,9 +156,8 @@ def CHIFFRE_DE_HILL(message,K):
     chiffré=""
     T=[]
     (p,q)= np.shape(K)
-    r=len(message)%p
-    if(r!=0):
-        message.rjust(len(message)+p-r,"x")
+    while(len(message)%p!=0):
+        message+="x"
     for c in message:
         x=INDICE(Tab,c)
         T.append(x)

@@ -169,9 +169,8 @@ def CHIFFRE_DE_HILL(message,K):
     T=[]
     (p,q)= np.shape(K)
     msg=FILTRER(message)
-    r=len(msg)%p
-    if(r!=0):
-        msg.rjust(len(msg)+p-r,"x")
+    while (len(msg)%p!=0):
+        msg+="x"
     for c in msg:
         x=INDICE(ALPHABET26,c)
         T.append(x)

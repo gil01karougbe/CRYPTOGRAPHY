@@ -168,23 +168,24 @@ def CHIFFRE_DE_HILL(message,K):
     chiffré=""
     T=[]
     (p,q)= np.shape(K)
+    print(p)
     msg=FILTRER(message)
-    r=len(msg)%p
-    if(r!=0):
-        msg.rjust(len(msg)+p-r,"x")
-    for c in msg:
-        x=INDICE(ALPHABET27,c)
-        T.append(x)
-    n=len(T)//p
-    tmp=np.array(T)
-    X=tmp.reshape(n,p)
-    Y=np.dot(X,K)
-    R=list(Y.reshape(n*p))
-    for i in R:
-        j=int(i)
-        c=ALPHABET27[j%27]
-        chiffré+=c
-    return chiffré
+    while(len(msg)%p!=0):
+        msg+="x"
+    if len(msg)%p==0:
+        for c in msg:
+            x=INDICE(ALPHABET27,c)
+            T.append(x)
+        n=len(T)//p
+        tmp=np.array(T)
+        X=tmp.reshape(n,p)
+        Y=np.dot(X,K)
+        R=list(Y.reshape(n*p))
+        for i in R:
+            j=int(i)
+            c=ALPHABET27[j%27]
+            chiffré+=c
+        return chiffré
 def DECHIFFREMENT_HILL(chiffré,K):
     K1=inv(K)
     return CHIFFRE_DE_HILL(chiffré,K1)
