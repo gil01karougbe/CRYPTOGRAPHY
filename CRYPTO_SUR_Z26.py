@@ -225,8 +225,9 @@ def CRYPTANALYSE_CESAR(chiffré):
     mc=DECHIFFREMENT_DE_CESAR(chiffré,p)
     if(CHIFFRE_DE_CESAR(mc)==chiffré):return mc
     else:
+        T.remove(m1)
         #conjecture2
-        (i2,m2)=MAX()    
+        (i2,m2)=MAX(T)    
 
 
 

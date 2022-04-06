@@ -58,6 +58,6 @@ def gp_inverse(Y,p,N):
 def MAX(T):
   max=T[0]
   for i in T:
-    if i>=max:max=i
+    if i>max:max=i
   j=T.index(max)  
   return (j,max)
