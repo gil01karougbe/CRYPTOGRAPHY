@@ -168,7 +168,6 @@ def CHIFFRE_DE_HILL(message,K):
     chiffré=""
     T=[]
     (p,q)= np.shape(K)
-    print(p)
     msg=FILTRER(message)
     while(len(msg)%p!=0):
         msg+="x"
@@ -216,12 +215,6 @@ def DECHIFFREMENT_VERNAM(chiffré,key):
             msgclaire+=ALPHABET27[y%27]
     return msgclaire
 
-#CRYPTANALYSE
-
-
-
-
-
 
 
 
@@ -233,34 +226,34 @@ def DECHIFFREMENT_VERNAM(chiffré,key):
 
 #TESTS
 m="rien ne se perd tout ce transforme.c'est ce qu'affirmait lavoisier."
-print("---------------------")
+print("CESAR---------------------")
 C1=CHIFFRE_DE_CESAR(m,5)
 print(C1)
 print(DECHIFFREMENT_DE_CESAR(C1,5))
-print("----------------------")
+print("DECALAGE AFFINE----------------------")
 C2=DECALAGE_AFFINE(m,7,5)
 print(C2)
 print(DECHIFFREMENT_DE_DECALAGEAFFINE(C2,7,5))
-print("---------------------")
+print("VIGENERE---------------------")
 C3=CHIFFRE_DE_VIGENERE(m,"marc")
 print(C3)
 print(DECHIFFREMENT_VIGENERE(C3,"marc"))
-print("---------------------")
+print("DECALAGE AFFINE PAR BLOC---------------------")
 C4=DECALAGE_AFFINE_PAR_BLOC(m,17,40,2)
 print(C4)
 print(DECHIFFREMENT_AFFINE_PAR_BLOC(C4,17,40,2))
-print("---------------------")
+print("PERMUTATION---------------------")
 C5=CHIFFRE_PAR_PERMUTATION(m,"crossword",10)
 print(C5)
 print(DECHIFFREMENT_PERMUTATION(C5,"crossword",10))
-print("-----------------------")
+print("HILL-----------------------")
 key=[[1,2],
     [3,7]]
 k=np.array(key)
 C6=CHIFFRE_DE_HILL(m,k)
 print(C6)
 print(DECHIFFREMENT_HILL(C6,k))
-print("---------------------")
+print("VERNAM---------------------")
 C7=CHIFFRE_DE_VERNAM(m,m)
 print(C7)
 print(DECHIFFREMENT_VERNAM(C7,m))
